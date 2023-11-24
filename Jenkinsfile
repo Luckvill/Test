@@ -32,7 +32,7 @@ pipeline {
                         def URL = "http://" + sh(script: 'curl -s ifconfig.me', returnStdout: true).trim() + ":8080/ghprbhook/"
                         // Verifica si el webhook ya existe en el repo, si no lo crea
                         if (!existingWebhook.contains("$URL")) {
-                        def payload = '{"name": "web", "active": true, "events": ["pull_request"], "config": {"url": "' + URL + '", "content_type": "json"}}'
+                        def payload = '{"name": "web", "active": true, "events": ["pull_request"], "config": {"url": "' + URL + '", "content_type": "json", "secret": "1234"}}'
                         sh """
                             curl -X POST \
                             -H "Authorization: token $GITHUB_TOKEN" \
@@ -55,14 +55,15 @@ pipeline {
                 if (env.ghprbActualCommit != null) {
                     echo env.ghprbActualCommit
                     def pullRequestSHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                    def status = '{"state": "success", "description": "Pull Request build successfull", "context": "Jenkins"}'
+                    def status = '{"name": "Jenkins Check", "head_sha": "' + pullRequestSHA + '", "status": "completed", "conclusion": "success", "output": {"title": "Pull Request build successful", "summary": "The Jenkins build passed successfully", "text": "Detailed information about the build"}}'
+                    
                     withCredentials([string(credentialsId: 'TOKEN_REPO_PROFESOR1', variable: 'GITHUB_TOKEN')]) {
                         sh """
                         curl -X POST \
                         -H "Authorization: token ${GITHUB_TOKEN}" \
                         -H "Accept: application/vnd.github.v3+json" \
                         -d '${status}' \
-                        https://api.github.com/repos/Luckvill/Test/statuses/${pullRequestSHA}
+                        https://api.github.com/repos/Luckvill/Test/check-runs
                         """
                     }
                 } else {
