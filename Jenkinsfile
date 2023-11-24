@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Crea el Webhooks en caso de que no exista') {
+        stage('Crea el Webhookss en caso de que no exista') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'Borrar', variable: 'GITHUB_TOKEN')]) {
