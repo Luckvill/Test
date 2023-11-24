@@ -53,6 +53,7 @@ pipeline {
         success {
             script {
                 if (env.ghprbActualCommit != null) {
+                    echo env.ghprbActualCommit
                     def pullRequestSHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     def status = '{"state": "success", "description": "Pull Request build successfull", "context": "Jenkins"}'
                     withCredentials([string(credentialsId: 'TOKEN_REPO_PROFESOR1', variable: 'GITHUB_TOKEN')]) {
@@ -81,7 +82,6 @@ pipeline {
         failure {
             script {
                 if (env.CHANGE_ID != null) {
-                    echo '1'
                     def pullRequestSHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     def status = '{"state": "failure", "description": "Pull Request build failed", "context": "Jenkins"}'
                     withCredentials([string(credentialsId: 'TOKEN_REPO_PROFESOR1', variable: 'GITHUB_TOKEN')]) {
