@@ -12,7 +12,7 @@ pipeline {
                         def URL = "http://" + sh(script: 'curl -s ifconfig.me', returnStdout: true).trim() + ":8080/ghprbhook/"
                         // Verifica si el webhook ya existe en el repo, si no lo crea
                         if (!existingWebhook.contains("$URL")) {
-                        def payload = '{"name": "web", "active": true, "events": ["pull_request"], "config": {"url": "' + URL + '", "content_type": "json"}}'
+                        def payload = '{"name": "web", "active": true, "events": ["pull_request"], "config": {"url": "' + URL + '", "content_type": "json", "secret": "69420"}}'
                         sh """
                             curl -X POST \
                             -H "Authorization: token $GITHUB_TOKEN" \
