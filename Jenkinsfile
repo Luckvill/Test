@@ -1,6 +1,7 @@
 pipeline {
     agent any
     stages {
+       main
         stage('Mantenimientos de la database') {
             steps {
                 script {
