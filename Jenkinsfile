@@ -55,15 +55,14 @@ pipeline {
                 if (env.ghprbActualCommit != null) {
                     echo env.ghprbActualCommit
                     def pullRequestSHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                    def status = '{"name": "Jenkins Check", "head_sha": "' + pullRequestSHA + '", "status": "completed", "conclusion": "success", "output": {"title": "Pull Request build successful", "summary": "The Jenkins build passed successfully", "text": "Detailed information about the build"}}'
-                    
+                    def status = '{"state": "success", "description": "Pull Request build was successful", "context": "Jenkins"}'
                     withCredentials([string(credentialsId: 'TOKEN_REPO_PROFESOR1', variable: 'GITHUB_TOKEN')]) {
                         sh """
                         curl -X POST \
                         -H "Authorization: token ${GITHUB_TOKEN}" \
                         -H "Accept: application/vnd.github.v3+json" \
                         -d '${status}' \
-                        https://api.github.com/repos/Luckvill/Test/check-runs
+                        https://api.github.com/repos/Luckvill/Test/statuses/${pullRequestSHA}
                         """
                     }
                 } else {
@@ -82,7 +81,7 @@ pipeline {
         }
         failure {
             script {
-                if (env.CHANGE_ID != null) {
+                if (env.ghprbActualCommit != null) {
                     def pullRequestSHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     def status = '{"state": "failure", "description": "Pull Request build failed", "context": "Jenkins"}'
                     withCredentials([string(credentialsId: 'TOKEN_REPO_PROFESOR1', variable: 'GITHUB_TOKEN')]) {
