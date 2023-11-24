@@ -5,7 +5,7 @@ pipeline {
             steps {
                 script {
                     // Se descarga la base de datos Employees.db
-                    sh 'wget -O Employees.db https://github.com/Lolailo123/Test/raw/main/Employees.db'
+                    sh 'wget -O Employees.db https://github.com/rubenixter/Test/raw/main/Employees.db'
                     
                     // Se hace una copia de los datos actuales
                     sh 'sqlite3 Employees.db ".dump" > Backup.sql'
@@ -29,7 +29,7 @@ pipeline {
                         def existingWebhook = sh(
                             script: 'curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/Luckvill/Test/hooks',
                             returnStdout: true).trim()
-                        def URL = "http://" + sh(script: 'curl -s ifconfig.me', returnStdout: true).trim() + ":8080/github-webhook/"
+                        def URL = "http://" + sh(script: 'curl -s ifconfig.me', returnStdout: true).trim() + ":8080/ghprbhook/"
                         // Verifica si el webhook ya existe en el repo, si no lo crea
                         if (!existingWebhook.contains("$URL")) {
                         def payload = '{"name": "web", "active": true, "events": ["pull_request"], "config": {"url": "' + URL + '", "content_type": "json","secret":"69420"}}'
@@ -72,7 +72,7 @@ pipeline {
                         -H "Authorization: token ${GITHUB_TOKEN}" \
                         -H "Accept: application/vnd.github.v3+json" \
                         -d '{"state": "success", "description": "Database maintenance successful", "context": "Jenkins"}' \
-                        https://api.github.com/repos/Lolailo123/Test/statuses/${commitSHA}
+                        https://api.github.com/repos/rubenixter/Test/statuses/${commitSHA}
                         """
                     }
                 }
@@ -100,7 +100,7 @@ pipeline {
                         -H "Authorization: token $GITHUB_TOKEN" \
                         -H "Accept: application/vnd.github.v3+json" \
                         -d '{"state": "failure", "description": "Database maintenance failed", "context": "Jenkins"}' \
-                        https://api.github.com/repos/Lolailo123/Test/statuses/${commitSHA}
+                        https://api.github.com/repos/rubenixter/Test/statuses/${commitSHA}
                         """
                     }
                 }
