@@ -53,9 +53,9 @@ pipeline {
         success {
             script {
                 if (env.ghprbActualCommit != null) {
-                    echo env.ghprbActualCommit
-                    echo '1'
                     def pullRequestSHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    echo pullRequestSHA
+                    echo '1'
                     def status = '{"state": "success", "description": "Pull Request build was successful", "context": "Jenkins"}'
                     withCredentials([string(credentialsId: 'TOKEN_REPO_PROFESOR1', variable: 'GITHUB_TOKEN')]) {
                         sh """
@@ -63,7 +63,7 @@ pipeline {
                         -H "Authorization: token ${GITHUB_TOKEN}" \
                         -H "Accept: application/vnd.github.v3+json" \
                         -d '${status}' \
-                        https://api.github.com/repos/Luckvill/Test/statuses/${sha1}
+                        https://api.github.com/repos/Luckvill/Test/statuses/${pullRequestSHA}
                         """
                     }
                 } else {
