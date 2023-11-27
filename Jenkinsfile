@@ -67,6 +67,7 @@ pipeline {
                     }
                 } else {
                     def commitSHA = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    echo commitSHA
                     withCredentials([string(credentialsId: 'TOKEN_JENKINS1', variable: 'GITHUB_TOKEN')]) {
                         sh """
                         curl -X POST \
